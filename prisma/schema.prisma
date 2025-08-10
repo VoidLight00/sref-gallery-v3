@@ -1,0 +1,405 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  username          String   @unique @db.VarChar(50)
+  passwordHash      String   @map("password_hash")
+  firstName         String?  @map("first_name") @db.VarChar(100)
+  lastName          String?  @map("last_name") @db.VarChar(100)
+  avatarUrl         String?  @map("avatar_url")
+  premium           Boolean  @default(false)
+  admin             Boolean  @default(false)
+  emailVerified     Boolean  @default(false) @map("email_verified")
+  emailVerifiedAt   DateTime? @map("email_verified_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  lastLogin         DateTime? @map("last_login")
+  loginCount        Int      @default(0) @map("login_count")
+  status            UserStatus @default(ACTIVE)
+
+  // Relations
+  submittedSrefs    SrefCode[] @relation("SubmittedBy")
+  approvedSrefs     SrefCode[] @relation("ApprovedBy")
+  favorites         UserFavorite[]
+  likes             UserLike[]
+  downloads         UserDownload[]
+  collections       Collection[]
+  reports           SrefReport[] @relation("ReportedBy")
+  reviewedReports   SrefReport[] @relation("ReviewedBy")
+  notifications     Notification[]
+  apiKeys           ApiKey[]
+  srefAnalytics     SrefAnalytic[]
+  pageAnalytics     PageAnalytic[]
+  searchAnalytics   SearchAnalytic[]
+
+  @@map("users")
+}
+
+model SrefCode {
+  id                String     @id @default(uuid())
+  code              String     @unique @db.VarChar(20)
+  title             String     @db.VarChar(255)
+  description       String?
+  promptExamples    String[]   @map("prompt_examples")
+  popularityScore   Int        @default(0) @map("popularity_score")
+  views             Int        @default(0)
+  likes             Int        @default(0)
+  favorites         Int        @default(0)
+  downloads         Int        @default(0)
+  featured          Boolean    @default(false)
+  premium           Boolean    @default(false)
+  verified          Boolean    @default(false)
+  status            SrefStatus @default(ACTIVE)
+  slug              String?    @unique @db.VarChar(255)
+  metaDescription   String?    @map("meta_description")
+  metaKeywords      String[]   @map("meta_keywords")
+  createdAt         DateTime   @default(now()) @map("created_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
+  featuredAt        DateTime?  @map("featured_at")
+  submittedById     String?    @map("submitted_by") @db.Uuid
+  approvedById      String?    @map("approved_by") @db.Uuid
+  approvedAt        DateTime?  @map("approved_at")
+
+  // Relations
+  submittedBy       User?      @relation("SubmittedBy", fields: [submittedById], references: [id], onDelete: SetNull)
+  approvedBy        User?      @relation("ApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  categories        SrefCategory[]
+  tags              SrefTag[]
+  images            SrefImage[]
+  userFavorites     UserFavorite[]
+  userLikes         UserLike[]
+  userDownloads     UserDownload[]
+  collectionItems   CollectionItem[]
+  analytics         SrefAnalytic[]
+  reports           SrefReport[]
+
+  @@map("sref_codes")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(100)
+  slug        String    @unique @db.VarChar(100)
+  description String?
+  icon        String?   @db.VarChar(10)
+  color       String?   @db.VarChar(7)
+  featured    Boolean   @default(false)
+  sortOrder   Int       @default(0) @map("sort_order")
+  parentId    String?   @map("parent_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  srefCount   Int       @default(0) @map("sref_count")
+
+  // Relations
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryHierarchy")
+  srefCodes   SrefCategory[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(50)
+  slug        String   @unique @db.VarChar(50)
+  description String?
+  color       String?  @db.VarChar(7)
+  usageCount  Int      @default(0) @map("usage_count")
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  srefCodes   SrefTag[]
+
+  @@map("tags")
+}
+
+model SrefCategory {
+  srefId     String   @map("sref_id") @db.Uuid
+  categoryId String   @map("category_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  sref       SrefCode @relation(fields: [srefId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([srefId, categoryId])
+  @@map("sref_categories")
+}
+
+model SrefTag {
+  srefId    String   @map("sref_id") @db.Uuid
+  tagId     String   @map("tag_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  sref      SrefCode @relation(fields: [srefId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([srefId, tagId])
+  @@map("sref_tags")
+}
+
+model SrefImage {
+  id              String   @id @default(uuid())
+  srefId          String   @map("sref_id") @db.Uuid
+  imageUrl        String   @map("image_url")
+  thumbnailUrl    String?  @map("thumbnail_url")
+  imageOrder      Int      @map("image_order") @default(1)
+  altText         String?  @map("alt_text") @db.VarChar(255)
+  width           Int?
+  height          Int?
+  fileSize        Int?     @map("file_size")
+  format          String?  @db.VarChar(10)
+  blurHash        String?  @map("blur_hash") @db.VarChar(50)
+  createdAt       DateTime @default(now()) @map("created_at")
+  s3Key           String?  @map("s3_key")
+  processed       Boolean  @default(false)
+  processingError String?  @map("processing_error")
+
+  // Relations
+  sref            SrefCode @relation(fields: [srefId], references: [id], onDelete: Cascade)
+
+  @@map("sref_images")
+}
+
+model UserFavorite {
+  userId    String   @map("user_id") @db.Uuid
+  srefId    String   @map("sref_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sref      SrefCode @relation(fields: [srefId], references: [id], onDelete: Cascade)
+
+  @@id([userId, srefId])
+  @@map("user_favorites")
+}
+
+model UserLike {
+  userId    String   @map("user_id") @db.Uuid
+  srefId    String   @map("sref_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sref      SrefCode @relation(fields: [srefId], references: [id], onDelete: Cascade)
+
+  @@id([userId, srefId])
+  @@map("user_likes")
+}
+
+model UserDownload {
+  id           String       @id @default(uuid())
+  userId       String       @map("user_id") @db.Uuid
+  srefId       String       @map("sref_id") @db.Uuid
+  downloadType DownloadType @map("download_type") @default(IMAGES)
+  ipAddress    String?      @map("ip_address") @db.Inet
+  userAgent    String?      @map("user_agent")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  // Relations
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sref         SrefCode     @relation(fields: [srefId], references: [id], onDelete: Cascade)
+
+  @@map("user_downloads")
+}
+
+model Collection {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  description String?
+  slug        String?  @db.VarChar(255)
+  isPublic    Boolean  @default(false) @map("is_public")
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       CollectionItem[]
+
+  @@unique([userId, slug])
+  @@map("collections")
+}
+
+model CollectionItem {
+  collectionId String   @map("collection_id") @db.Uuid
+  srefId       String   @map("sref_id") @db.Uuid
+  addedAt      DateTime @default(now()) @map("added_at")
+
+  // Relations
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  sref         SrefCode   @relation(fields: [srefId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, srefId])
+  @@map("collection_items")
+}
+
+model SrefAnalytic {
+  id         String           @id @default(uuid())
+  srefId     String           @map("sref_id") @db.Uuid
+  eventType  AnalyticEventType @map("event_type")
+  userId     String?          @map("user_id") @db.Uuid
+  sessionId  String?          @map("session_id") @db.VarChar(255)
+  ipAddress  String?          @map("ip_address") @db.Inet
+  userAgent  String?          @map("user_agent")
+  referrer   String?
+  country    String?          @db.VarChar(2)
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  // Relations
+  sref       SrefCode         @relation(fields: [srefId], references: [id], onDelete: Cascade)
+  user       User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("sref_analytics")
+}
+
+model PageAnalytic {
+  id         String   @id @default(uuid())
+  pagePath   String   @map("page_path") @db.VarChar(255)
+  userId     String?  @map("user_id") @db.Uuid
+  sessionId  String?  @map("session_id") @db.VarChar(255)
+  ipAddress  String?  @map("ip_address") @db.Inet
+  userAgent  String?  @map("user_agent")
+  referrer   String?
+  country    String?  @db.VarChar(2)
+  loadTime   Int?     @map("load_time")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("page_analytics")
+}
+
+model SearchAnalytic {
+  id           String   @id @default(uuid())
+  query        String
+  filters      Json?
+  resultsCount Int?     @map("results_count")
+  userId       String?  @map("user_id") @db.Uuid
+  sessionId    String?  @map("session_id") @db.VarChar(255)
+  ipAddress    String?  @map("ip_address") @db.Inet
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("search_analytics")
+}
+
+model SrefReport {
+  id          String       @id @default(uuid())
+  srefId      String       @map("sref_id") @db.Uuid
+  reportedById String       @map("reported_by") @db.Uuid
+  reason      ReportReason
+  description String?
+  status      ReportStatus @default(PENDING)
+  reviewedById String?      @map("reviewed_by") @db.Uuid
+  reviewedAt  DateTime?    @map("reviewed_at")
+  resolution  String?
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  // Relations
+  sref        SrefCode     @relation(fields: [srefId], references: [id], onDelete: Cascade)
+  reportedBy  User         @relation("ReportedBy", fields: [reportedById], references: [id], onDelete: Cascade)
+  reviewedBy  User?        @relation("ReviewedBy", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@map("sref_reports")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id") @db.Uuid
+  type      String   @db.VarChar(50)
+  title     String   @db.VarChar(255)
+  message   String?
+  data      Json?
+  read      Boolean  @default(false)
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model ApiKey {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id") @db.Uuid
+  name        String   @db.VarChar(255)
+  keyHash     String   @map("key_hash") @db.VarChar(255)
+  permissions String[] @default(["read"])
+  rateLimit   Int      @default(1000) @map("rate_limit")
+  lastUsedAt  DateTime? @map("last_used_at")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  active      Boolean  @default(true)
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+// Enums
+enum UserStatus {
+  ACTIVE  @map("active")
+  SUSPENDED @map("suspended")
+  DELETED @map("deleted")
+}
+
+enum SrefStatus {
+  ACTIVE   @map("active")
+  PENDING  @map("pending")
+  DISABLED @map("disabled")
+  REPORTED @map("reported")
+}
+
+enum DownloadType {
+  IMAGES  @map("images")
+  PROMPTS @map("prompts")
+  ALL     @map("all")
+}
+
+enum AnalyticEventType {
+  VIEW       @map("view")
+  LIKE       @map("like")
+  UNLIKE     @map("unlike")
+  FAVORITE   @map("favorite")
+  UNFAVORITE @map("unfavorite")
+  DOWNLOAD   @map("download")
+  SHARE      @map("share")
+  COPY       @map("copy")
+}
+
+enum ReportReason {
+  INAPPROPRIATE @map("inappropriate")
+  COPYRIGHT     @map("copyright")
+  BROKEN        @map("broken")
+  DUPLICATE     @map("duplicate")
+  SPAM          @map("spam")
+  OTHER         @map("other")
+}
+
+enum ReportStatus {
+  PENDING   @map("pending")
+  REVIEWED  @map("reviewed")
+  RESOLVED  @map("resolved")
+  DISMISSED @map("dismissed")
+}

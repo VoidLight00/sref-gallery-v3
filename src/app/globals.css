@@ -62,3 +62,13 @@ body {
   white-space: nowrap;
   border: 0;
 }
+
+/* Toast notification progress bar animation */
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}

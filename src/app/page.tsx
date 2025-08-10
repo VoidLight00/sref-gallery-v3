@@ -1,11 +1,25 @@
+'use client';
+
+import { useCallback } from 'react';
 import Header from '@/components/layout/Header';
 import HeroSection from '@/components/layout/HeroSection';
 import CategoryGrid from '@/components/layout/CategoryGrid';
-import SREFCard from '@/components/sref/SREFCard';
+import InteractiveSREFCard from '@/components/sref/InteractiveSREFCard';
 import { testSREFData } from '@/lib/data/sref-data';
 import Link from 'next/link';
 
 export default function HomePage() {
+  const handleLike = useCallback((srefId: string, liked: boolean) => {
+    console.log(`SREF ${srefId} ${liked ? 'liked' : 'unliked'}`);
+  }, []);
+
+  const handleBookmark = useCallback((srefId: string, bookmarked: boolean) => {
+    console.log(`SREF ${srefId} ${bookmarked ? 'bookmarked' : 'unbookmarked'}`);
+  }, []);
+
+  const handleCopy = useCallback((srefCode: string) => {
+    console.log(`SREF code copied: ${srefCode}`);
+  }, []);
   // Get featured SREFs for homepage
   const featuredSREFs = testSREFData.filter(sref => sref.featured).slice(0, 6);
   const newestSREFs = [...testSREFData]
@@ -47,10 +61,13 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {featuredSREFs.map((sref, index) => (
-              <SREFCard 
+              <InteractiveSREFCard 
                 key={sref.id} 
                 sref={sref} 
                 priority={index < 3}
+                onLike={handleLike}
+                onBookmark={handleBookmark}
+                onCopy={handleCopy}
               />
             ))}
           </div>
@@ -95,7 +112,13 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {newestSREFs.map((sref) => (
-              <SREFCard key={sref.id} sref={sref} />
+              <InteractiveSREFCard 
+                key={sref.id} 
+                sref={sref}
+                onLike={handleLike}
+                onBookmark={handleBookmark}
+                onCopy={handleCopy}
+              />
             ))}
           </div>
           

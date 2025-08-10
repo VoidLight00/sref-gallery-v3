@@ -1,0 +1,449 @@
+{
+  "category_taxonomy": {
+    "last_updated": "2025-01-10",
+    "total_categories": 12,
+    "classification_method": "community_driven_with_expert_validation",
+    "categories": {
+      "anime": {
+        "id": "anime",
+        "name": "Anime & Manga",
+        "slug": "anime",
+        "description": "Japanese animation and manga art styles",
+        "icon": "🎌",
+        "color": "#FF6B9D",
+        "subcategories": [
+          "studio-ghibli",
+          "modern-anime",
+          "manga-style",
+          "chibi",
+          "mecha",
+          "slice-of-life"
+        ],
+        "popular_codes": [
+          "505167129",
+          "4071540499"
+        ],
+        "characteristics": [
+          "Large expressive eyes",
+          "Vibrant colors",
+          "Clean line art",
+          "Emotional expressions",
+          "Fantasy elements"
+        ],
+        "optimal_prompts": [
+          "anime character",
+          "magical girl",
+          "fantasy scene",
+          "emotional portrait"
+        ],
+        "niji_compatible": true,
+        "average_popularity": 88.7
+      },
+      "photography": {
+        "id": "photography",
+        "name": "Photography",
+        "slug": "photography",
+        "description": "Photographic styles and camera effects",
+        "icon": "📸",
+        "color": "#4ECDC4",
+        "subcategories": [
+          "film-photography",
+          "portrait",
+          "landscape",
+          "street",
+          "macro",
+          "black-white",
+          "vintage"
+        ],
+        "popular_codes": [
+          "3747634208",
+          "1172155051"
+        ],
+        "characteristics": [
+          "Realistic lighting",
+          "Natural textures",
+          "Film grain effects",
+          "Depth of field",
+          "Color grading"
+        ],
+        "optimal_prompts": [
+          "professional headshot",
+          "landscape photography",
+          "candid street photo",
+          "macro details"
+        ],
+        "average_popularity": 88.0
+      },
+      "illustration": {
+        "id": "illustration",
+        "name": "Illustration",
+        "slug": "illustration",
+        "description": "Digital and traditional illustration styles",
+        "icon": "🎨",
+        "color": "#45B7D1",
+        "subcategories": [
+          "childrens-book",
+          "editorial",
+          "concept-art",
+          "character-design",
+          "book-cover",
+          "advertising"
+        ],
+        "popular_codes": [
+          "2940727885",
+          "1018232447"
+        ],
+        "characteristics": [
+          "Clean vector lines",
+          "Balanced composition",
+          "Professional quality",
+          "Clear storytelling",
+          "Versatile style"
+        ],
+        "optimal_prompts": [
+          "children's book illustration",
+          "character design",
+          "concept art",
+          "editorial illustration"
+        ],
+        "average_popularity": 91.5
+      },
+      "traditional-art": {
+        "id": "traditional-art",
+        "name": "Traditional Art",
+        "slug": "traditional-art", 
+        "description": "Classic painting and drawing techniques",
+        "icon": "🖼️",
+        "color": "#D4AF37",
+        "subcategories": [
+          "oil-painting",
+          "watercolor",
+          "acrylic",
+          "pencil-drawing",
+          "charcoal",
+          "pastel",
+          "ink-wash"
+        ],
+        "popular_codes": [
+          "178455688",
+          "2653204188",
+          "1625283504"
+        ],
+        "characteristics": [
+          "Visible brush strokes",
+          "Natural textures",
+          "Organic color blending",
+          "Traditional mediums",
+          "Artistic imperfections"
+        ],
+        "optimal_prompts": [
+          "oil painting portrait",
+          "watercolor landscape",
+          "still life painting",
+          "classical art"
+        ],
+        "average_popularity": 73.5
+      },
+      "digital-art": {
+        "id": "digital-art",
+        "name": "Digital Art",
+        "slug": "digital-art",
+        "description": "Modern digital art and futuristic styles",
+        "icon": "💻",
+        "color": "#9B59B6",
+        "subcategories": [
+          "cyberpunk",
+          "sci-fi",
+          "glitch-art",
+          "3d-render",
+          "neon",
+          "holographic"
+        ],
+        "popular_codes": [
+          "2178024008",
+          "863241300"
+        ],
+        "characteristics": [
+          "Vibrant neon colors",
+          "Futuristic elements",
+          "Digital effects",
+          "Clean precision",
+          "Technological themes"
+        ],
+        "optimal_prompts": [
+          "futuristic cityscape",
+          "cyberpunk character",
+          "holographic interface",
+          "digital art portrait"
+        ],
+        "average_popularity": 85.5
+      },
+      "color-themed": {
+        "id": "color-themed",
+        "name": "Color Aesthetics",
+        "slug": "color-themed",
+        "description": "Styles focused on specific color schemes",
+        "icon": "🌈",
+        "color": "#FF7F50",
+        "subcategories": [
+          "monochromatic",
+          "complementary",
+          "analogous",
+          "triadic",
+          "warm-tones",
+          "cool-tones"
+        ],
+        "popular_codes": [
+          "3659177143",
+          "2750431991",
+          "444048532",
+          "2034865420"
+        ],
+        "characteristics": [
+          "Strong color focus",
+          "Emotional impact",
+          "Cohesive palette",
+          "Mood enhancement",
+          "Visual unity"
+        ],
+        "optimal_prompts": [
+          "monochromatic portrait",
+          "blue aesthetic scene",
+          "red minimalist design",
+          "color study"
+        ],
+        "average_popularity": 78.5
+      },
+      "line-art": {
+        "id": "line-art",
+        "name": "Line Art",
+        "slug": "line-art",
+        "description": "Clean line-based artistic styles",
+        "icon": "✏️",
+        "color": "#2C3E50",
+        "subcategories": [
+          "minimalist",
+          "detailed",
+          "sketch",
+          "technical",
+          "artistic",
+          "geometric"
+        ],
+        "popular_codes": [
+          "1290462105",
+          "3812520810",
+          "107383590"
+        ],
+        "characteristics": [
+          "Clean precise lines",
+          "Minimal color use",
+          "Strong composition",
+          "Elegant simplicity",
+          "Focus on form"
+        ],
+        "optimal_prompts": [
+          "line art portrait",
+          "minimalist sketch",
+          "technical drawing",
+          "clean illustration"
+        ],
+        "average_popularity": 75.0
+      },
+      "surreal": {
+        "id": "surreal",
+        "name": "Surreal & Abstract",
+        "slug": "surreal",
+        "description": "Surrealistic and abstract artistic styles",
+        "icon": "🌀",
+        "color": "#E74C3C",
+        "subcategories": [
+          "dreamlike",
+          "abstract",
+          "psychedelic", 
+          "impossible",
+          "fantasy",
+          "metaphorical"
+        ],
+        "popular_codes": [
+          "3788994340",
+          "2984033958", 
+          "1995773328"
+        ],
+        "characteristics": [
+          "Dreamlike quality",
+          "Impossible scenarios",
+          "Abstract forms",
+          "Emotional interpretation",
+          "Symbolic elements"
+        ],
+        "optimal_prompts": [
+          "surreal landscape",
+          "abstract composition",
+          "dreamlike scene",
+          "impossible architecture"
+        ],
+        "average_popularity": 69.0
+      },
+      "fantasy": {
+        "id": "fantasy",
+        "name": "Fantasy",
+        "slug": "fantasy",
+        "description": "Magical and fantastical art styles",
+        "icon": "🧙‍♂️",
+        "color": "#8E44AD",
+        "subcategories": [
+          "medieval",
+          "magical",
+          "mythical",
+          "enchanted",
+          "epic",
+          "fairy-tale"
+        ],
+        "popular_codes": [
+          "3193102811"
+        ],
+        "characteristics": [
+          "Magical elements",
+          "Mythical creatures",
+          "Enchanted environments",
+          "Epic scale",
+          "Whimsical details"
+        ],
+        "optimal_prompts": [
+          "fantasy landscape",
+          "magical creature",
+          "enchanted forest",
+          "mythical scene"
+        ],
+        "average_popularity": 89.0
+      },
+      "modern-art": {
+        "id": "modern-art",
+        "name": "Modern Art",
+        "slug": "modern-art",
+        "description": "Contemporary and modern artistic movements",
+        "icon": "🏛️",
+        "color": "#16A085",
+        "subcategories": [
+          "abstract-expressionism",
+          "pop-art",
+          "minimalism",
+          "cubism",
+          "impressionism",
+          "contemporary"
+        ],
+        "popular_codes": [
+          "863241300",
+          "284038501"
+        ],
+        "characteristics": [
+          "Bold compositions",
+          "Experimental techniques",
+          "Cultural commentary",
+          "Innovative approaches",
+          "Contemporary themes"
+        ],
+        "optimal_prompts": [
+          "modern art piece",
+          "abstract expressionism",
+          "pop art style",
+          "contemporary design"
+        ],
+        "average_popularity": 72.5
+      },
+      "vintage": {
+        "id": "vintage",
+        "name": "Vintage & Retro",
+        "slug": "vintage",
+        "description": "Nostalgic and retro aesthetic styles",
+        "icon": "📻",
+        "color": "#D35400",
+        "subcategories": [
+          "1920s",
+          "1950s",
+          "1970s",
+          "1980s",
+          "art-deco",
+          "retro-futurism"
+        ],
+        "popular_codes": [
+          "1954728280"
+        ],
+        "characteristics": [
+          "Nostalgic feel",
+          "Period-appropriate elements",
+          "Aged textures",
+          "Classic compositions",
+          "Historical accuracy"
+        ],
+        "optimal_prompts": [
+          "vintage poster",
+          "retro advertisement",
+          "1950s style",
+          "art deco design"
+        ],
+        "average_popularity": 63.0
+      },
+      "expressive-art": {
+        "id": "expressive-art",
+        "name": "Expressive Art",
+        "slug": "expressive-art",
+        "description": "Emotionally expressive and bold artistic styles",
+        "icon": "🎭",
+        "color": "#E67E22",
+        "subcategories": [
+          "emotional",
+          "dramatic",
+          "bold",
+          "gestural",
+          "intense",
+          "passionate"
+        ],
+        "popular_codes": [
+          "1141157800"
+        ],
+        "characteristics": [
+          "Strong emotions",
+          "Bold brushwork",
+          "Dramatic contrasts",
+          "Expressive marks",
+          "Passionate execution"
+        ],
+        "optimal_prompts": [
+          "expressive portrait",
+          "dramatic scene",
+          "emotional artwork",
+          "bold composition"
+        ],
+        "average_popularity": 57.0
+      }
+    },
+    "usage_statistics": {
+      "most_popular_category": "illustration",
+      "fastest_growing": "digital-art",
+      "most_versatile": "anime",
+      "beginner_friendly": ["illustration", "photography", "color-themed"],
+      "advanced": ["surreal", "traditional-art", "expressive-art"]
+    },
+    "cross_category_tags": {
+      "mood": ["dark", "bright", "moody", "cheerful", "dramatic", "serene"],
+      "complexity": ["simple", "detailed", "complex", "minimal", "intricate"],
+      "style": ["realistic", "stylized", "abstract", "geometric", "organic"],
+      "era": ["modern", "vintage", "classic", "contemporary", "retro"],
+      "emotion": ["happy", "sad", "mysterious", "energetic", "calm", "intense"]
+    },
+    "category_relationships": {
+      "complementary": {
+        "anime": ["illustration", "fantasy"],
+        "photography": ["traditional-art", "vintage"],
+        "digital-art": ["modern-art", "surreal"],
+        "line-art": ["illustration", "minimalism"]
+      },
+      "incompatible": {
+        "traditional-art": ["digital-art"],
+        "realistic": ["abstract"],
+        "minimal": ["complex"]
+      }
+    }
+  }
+}
