@@ -1,0 +1,31 @@
+
+> sref-gallery-v3@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Warning: Found multiple lockfiles. Selecting /Users/voidlight/package-lock.json.
+   Consider removing the lockfiles at:
+   * /Users/voidlight/claude-code/projects/sref-gallery-v3/package-lock.json
+
+   ▲ Next.js 15.4.6 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://10.140.169.69:3000
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+Watchpack Error (watcher): Error: EMFILE: too many open files, watch
+ ✓ Ready in 17.9s
+ ○ Compiling /_not-found/page ...
+ ✓ Compiled /_not-found/page in 1724ms
+ HEAD / 404 in 1861ms
+ GET /api/categories 404 in 27ms
+ HEAD / 404 in 17ms
+[?25h

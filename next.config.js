@@ -1,6 +1,17 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Webpack config to reduce file watching
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+        ignored: ['**/node_modules', '**/.next', '**/.git', '**/.npm', '**/.claude*']
+      }
+    }
+    return config
+  },
+  
   eslint: {
     // Disable ESLint during builds
     ignoreDuringBuilds: true,
@@ -19,6 +30,11 @@ const nextConfig: NextConfig = {
       'res.cloudinary.com', // Cloudinary
       'd1234567890.cloudfront.net', // AWS CloudFront (replace with actual domain)
     ],
+
+    // Netlify-specific image optimization
+    ...(process.env.NETLIFY && {
+      unoptimized: true, // Netlify handles image optimization
+    }),
     
     // Image size configuration
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -59,14 +75,14 @@ const nextConfig: NextConfig = {
     ]
   },
   
-  // Experimental features for better performance
-  experimental: {
-    // Enable server components optimization
-    optimizePackageImports: ['sharp']
-  },
+  // Experimental features for better performance (disabled for Next.js 14)
+  // experimental: {
+  //   // Enable server components optimization
+  //   optimizePackageImports: ['sharp']
+  // },
   
   // Compress responses in production
   compress: true,
 };
 
-export default nextConfig;
+module.exports = nextConfig;

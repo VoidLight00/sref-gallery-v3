@@ -1,0 +1,201 @@
+'use client';
+
+import { useState, useCallback } from 'react';
+import InteractiveSREFCard from '@/components/sref/InteractiveSREFCard';
+import SearchAndFilters from '@/components/ui/SearchAndFilters';
+import { SREFItem } from '@/lib/types/sref';
+
+interface DiscoverContentProps {
+  initialSREFs: SREFItem[];
+  totalCount: number;
+  categories: Array<{ id: string; name: string; slug: string; icon?: string | null; color?: string | null; }>;
+  tags: Array<{ id: string; name: string; }>;
+}
+
+export default function DiscoverContent({ 
+  initialSREFs, 
+  totalCount, 
+  categories, 
+  tags 
+}: DiscoverContentProps) {
+  const [srefs, setSREFs] = useState<SREFItem[]>(initialSREFs);
+  const [filteredData, setFilteredData] = useState<SREFItem[]>(initialSREFs);
+  const [loadedCount, setLoadedCount] = useState(12);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(initialSREFs.length === 12);
+
+  const handleLike = useCallback(async (srefId: string, liked: boolean) => {
+    try {
+      const response = await fetch(`/api/sref/${srefId}/like`, {
+        method: liked ? 'POST' : 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update like');
+      }
+
+      // Update local state
+      setSREFs(prev => prev.map(sref => 
+        sref.id === srefId 
+          ? { ...sref, likes: liked ? sref.likes + 1 : sref.likes - 1 }
+          : sref
+      ));
+      setFilteredData(prev => prev.map(sref => 
+        sref.id === srefId 
+          ? { ...sref, likes: liked ? sref.likes + 1 : sref.likes - 1 }
+          : sref
+      ));
+
+      console.log(`SREF ${srefId} ${liked ? 'liked' : 'unliked'}`);
+    } catch (error) {
+      console.error('Error updating like:', error);
+    }
+  }, []);
+
+  const handleBookmark = useCallback(async (srefId: string, bookmarked: boolean) => {
+    try {
+      const response = await fetch(`/api/sref/${srefId}/favorite`, {
+        method: bookmarked ? 'POST' : 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update bookmark');
+      }
+
+      // Update local state
+      setSREFs(prev => prev.map(sref => 
+        sref.id === srefId 
+          ? { ...sref, favorites: bookmarked ? sref.favorites + 1 : sref.favorites - 1 }
+          : sref
+      ));
+      setFilteredData(prev => prev.map(sref => 
+        sref.id === srefId 
+          ? { ...sref, favorites: bookmarked ? sref.favorites + 1 : sref.favorites - 1 }
+          : sref
+      ));
+
+      console.log(`SREF ${srefId} ${bookmarked ? 'bookmarked' : 'unbookmarked'}`);
+    } catch (error) {
+      console.error('Error updating bookmark:', error);
+    }
+  }, []);
+
+  const handleCopy = useCallback((srefCode: string) => {
+    navigator.clipboard.writeText(`--sref ${srefCode}`);
+    console.log(`SREF code copied: ${srefCode}`);
+  }, []);
+
+  const loadMore = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/sref?skip=${srefs.length}&take=12`);
+      if (!response.ok) {
+        throw new Error('Failed to load more SREFs');
+      }
+      
+      const newSREFs = await response.json();
+      
+      if (newSREFs.length === 0) {
+        setHasMore(false);
+      } else {
+        setSREFs(prev => [...prev, ...newSREFs]);
+        setFilteredData(prev => [...prev, ...newSREFs]);
+        setLoadedCount(prev => prev + newSREFs.length);
+        if (newSREFs.length < 12) {
+          setHasMore(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading more SREFs:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const displayedData = filteredData.slice(0, loadedCount);
+
+  return (
+    <>
+      {/* Interactive Search & Filters */}
+      <SearchAndFilters
+        data={srefs}
+        onFilteredDataChange={setFilteredData}
+        className="mb-8"
+      />
+
+      {/* Results Stats */}
+      <div className="mb-6 flex items-center justify-between">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Showing {displayedData.length} of {filteredData.length} results
+          {filteredData.length !== srefs.length && (
+            <span className="ml-2 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs">
+              Filtered
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Interactive Results Grid */}
+      {displayedData.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            {displayedData.map((sref, index) => (
+              <InteractiveSREFCard 
+                key={sref.id} 
+                sref={sref} 
+                priority={index < 8}
+                onLike={handleLike}
+                onBookmark={handleBookmark}
+                onCopy={handleCopy}
+              />
+            ))}
+          </div>
+
+          {/* Load More Button */}
+          {hasMore && displayedData.length === filteredData.length && (
+            <div className="text-center">
+              <button 
+                onClick={loadMore}
+                disabled={isLoading}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 flex items-center gap-2 mx-auto shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
+              >
+                {isLoading && (
+                  <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                )}
+                {isLoading ? 'Loading...' : 'Load More'}
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="text-center py-16">
+          <div className="text-6xl mb-4">🔍</div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            No results found
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Try adjusting your search or filters to find what you&apos;re looking for.
+          </p>
+          <button
+            onClick={() => {
+              setFilteredData(srefs);
+              setLoadedCount(12);
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-colors"
+          >
+            Clear All Filters
+          </button>
+        </div>
+      )}
+    </>
+  );
+}

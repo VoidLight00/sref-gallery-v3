@@ -1,42 +1,125 @@
-'use client';
-
-import { useState } from 'react';
 import Header from '@/components/layout/Header';
-import InteractiveSREFCard from '@/components/sref/InteractiveSREFCard';
-import SearchAndFilters from '@/components/ui/SearchAndFilters';
-import { testSREFData } from '@/lib/data/sref-data';
-import { SREFItem } from '@/lib/types/sref';
+import DiscoverContent from '@/components/sections/DiscoverContent';
+import { prisma } from '@/lib/prisma';
 
-export default function DiscoverPage() {
-  const [filteredData, setFilteredData] = useState<SREFItem[]>(testSREFData);
-  const [loadedCount, setLoadedCount] = useState(12);
-  const [isLoading, setIsLoading] = useState(false);
+async function getInitialSREFs() {
+  const srefs = await prisma.srefCode.findMany({
+    where: {
+      status: 'ACTIVE'
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true
+        }
+      },
+      categories: {
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              color: true
+            }
+          }
+        }
+      },
+      tags: {
+        include: {
+          tag: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
+      },
+      images: true
+    },
+    take: 12,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
 
-  const handleLike = (srefId: string, liked: boolean) => {
-    console.log(`SREF ${srefId} ${liked ? 'liked' : 'unliked'}`);
-    // In a real app, this would make an API call to update the like status
-  };
+  return srefs.map(sref => ({
+    id: sref.id,
+    code: sref.code,
+    title: sref.title,
+    description: sref.description || '',
+    imageUrl: sref.imageUrl || `/images/sref/${sref.code}.webp`,
+    images: sref.images?.length > 0 
+      ? sref.images.map(img => img.url) 
+      : [
+          `/images/sref/${sref.code}-1.webp`,
+          `/images/sref/${sref.code}-2.webp`,
+          `/images/sref/${sref.code}-3.webp`,
+          `/images/sref/${sref.code}-4.webp`
+        ],
+    promptExamples: sref.promptExamples ? JSON.parse(sref.promptExamples) : [],
+    featured: sref.featured,
+    premium: sref.premium,
+    likes: sref.likeCount,
+    views: sref.viewCount,
+    favorites: sref.favoriteCount,
+    category: sref.categories[0]?.category?.name || 'Uncategorized',
+    tags: sref.tags?.map(t => t.tag.name) || [],
+    createdAt: sref.createdAt.toISOString(),
+    user: sref.user ? {
+      id: sref.user.id,
+      name: sref.user.name || 'Anonymous',
+      avatar: sref.user.image || '/avatars/default.jpg'
+    } : undefined
+  }));
+}
 
-  const handleBookmark = (srefId: string, bookmarked: boolean) => {
-    console.log(`SREF ${srefId} ${bookmarked ? 'bookmarked' : 'unbookmarked'}`);
-    // In a real app, this would make an API call to update the bookmark status
-  };
+async function getTotalCount() {
+  return await prisma.srefCode.count({
+    where: {
+      status: 'ACTIVE'
+    }
+  });
+}
 
-  const handleCopy = (srefCode: string) => {
-    console.log(`SREF code copied: ${srefCode}`);
-    // Analytics tracking could be added here
-  };
+async function getCategories() {
+  const categories = await prisma.category.findMany({
+    orderBy: {
+      sortOrder: 'asc'
+    }
+  });
+  
+  return categories.map(cat => ({
+    id: cat.id,
+    name: cat.name,
+    slug: cat.slug,
+    icon: cat.icon,
+    color: cat.color
+  }));
+}
 
-  const loadMore = async () => {
-    setIsLoading(true);
-    // Simulate loading delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    setLoadedCount(prev => Math.min(prev + 12, filteredData.length));
-    setIsLoading(false);
-  };
+async function getTags() {
+  const tags = await prisma.tag.findMany({
+    orderBy: {
+      name: 'asc'
+    }
+  });
+  
+  return tags.map(tag => ({
+    id: tag.id,
+    name: tag.name
+  }));
+}
 
-  const displayedData = filteredData.slice(0, loadedCount);
-  const hasMore = loadedCount < filteredData.length;
+export default async function DiscoverPage() {
+  const [initialSREFs, totalCount, categories, tags] = await Promise.all([
+    getInitialSREFs(),
+    getTotalCount(),
+    getCategories(),
+    getTags()
+  ]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -49,84 +132,17 @@ export default function DiscoverPage() {
             🔍 Discover SREF Codes
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Explore our complete collection of {testSREFData.length} Midjourney style reference codes
+            Explore our complete collection of {totalCount} Midjourney style reference codes
           </p>
         </div>
 
-        {/* Interactive Search & Filters */}
-        <SearchAndFilters
-          data={testSREFData}
-          onFilteredDataChange={setFilteredData}
-          className="mb-8"
+        {/* Client Component for Interactive Features */}
+        <DiscoverContent
+          initialSREFs={initialSREFs}
+          totalCount={totalCount}
+          categories={categories}
+          tags={tags}
         />
-
-        {/* Results Stats */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Showing {displayedData.length} of {filteredData.length} results
-            {filteredData.length !== testSREFData.length && (
-              <span className="ml-2 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs">
-                Filtered
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Interactive Results Grid */}
-        {displayedData.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-              {displayedData.map((sref, index) => (
-                <InteractiveSREFCard 
-                  key={sref.id} 
-                  sref={sref} 
-                  priority={index < 8}
-                  onLike={handleLike}
-                  onBookmark={handleBookmark}
-                  onCopy={handleCopy}
-                />
-              ))}
-            </div>
-
-            {/* Load More Button */}
-            {hasMore && (
-              <div className="text-center">
-                <button 
-                  onClick={loadMore}
-                  disabled={isLoading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 flex items-center gap-2 mx-auto shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-                >
-                  {isLoading && (
-                    <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                  )}
-                  {isLoading ? 'Loading...' : `Load More (${filteredData.length - loadedCount} remaining)`}
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              No results found
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Try adjusting your search or filters to find what you&apos;re looking for.
-            </p>
-            <button
-              onClick={() => {
-                // Reset filters - this would be implemented in SearchAndFilters component
-                window.location.reload();
-              }}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-colors"
-            >
-              Clear All Filters
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

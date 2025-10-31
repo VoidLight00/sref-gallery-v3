@@ -1,0 +1,9 @@
+[
+  {
+    "session_id": "a6fca6ba-dfa9-4901-a4a6-f990cc67c467",
+    "transcript_path": "/Users/voidlight/.claude/projects/-Users-voidlight/a6fca6ba-dfa9-4901-a4a6-f990cc67c467.jsonl",
+    "cwd": "/Users/voidlight/claude-code/projects/sref-gallery-v3/public/images/sref",
+    "hook_event_name": "UserPromptSubmit",
+    "prompt": "\uc774\uc5b4\uc11c \uc9c4\ud589 "
+  }
+]

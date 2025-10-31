@@ -1,0 +1,16 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Impressionist Style -->
+  <defs>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+  <rect width="400" height="400" fill="#ffeaa7"/>
+  <ellipse cx="150" cy="100" rx="40" ry="30" fill="#fd79a8" opacity="0.8" filter="url(#blur)"/>
+  <ellipse cx="250" cy="120" rx="50" ry="35" fill="#74b9ff" opacity="0.7" filter="url(#blur)"/>
+  <ellipse cx="200" cy="200" rx="60" ry="40" fill="#00b894" opacity="0.6" filter="url(#blur)"/>
+  <ellipse cx="120" cy="250" rx="45" ry="25" fill="#e17055" opacity="0.8" filter="url(#blur)"/>
+  <ellipse cx="280" cy="280" rx="55" ry="35" fill="#6c5ce7" opacity="0.7" filter="url(#blur)"/>
+  <text x="200" y="350" font-family="cursive" font-size="24" fill="#2d3436" text-anchor="middle">SREF: 3951847293</text>
+  <text x="200" y="375" font-family="cursive" font-size="14" fill="#636e72" text-anchor="middle">Impressionist Landscape</text>
+</svg>

@@ -1,0 +1,13 @@
+
+> sref-gallery-v3@0.1.0 dev
+> next dev
+
+/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/config.js:800
+            throw new Error(`Configuring Next.js via '${(0, _path.basename)(nonJsPath)}' is not supported. Please replace the file with 'next.config.js' or 'next.config.mjs'.`);
+                  ^
+
+Error: Configuring Next.js via 'next.config.ts' is not supported. Please replace the file with 'next.config.js' or 'next.config.mjs'.
+    at loadConfig (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/config.js:800:19)
+    at async Module.nextDev (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/cli/next-dev.js:175:14)
+
+Node.js v22.17.0

@@ -1,30 +1,164 @@
-'use client';
-
-import { useCallback } from 'react';
 import Header from '@/components/layout/Header';
 import HeroSection from '@/components/layout/HeroSection';
 import CategoryGrid from '@/components/layout/CategoryGrid';
-import InteractiveSREFCard from '@/components/sref/InteractiveSREFCard';
-import { testSREFData } from '@/lib/data/sref-data';
+import SREFSection from '@/components/sections/SREFSection';
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
-export default function HomePage() {
-  const handleLike = useCallback((srefId: string, liked: boolean) => {
-    console.log(`SREF ${srefId} ${liked ? 'liked' : 'unliked'}`);
-  }, []);
+async function getFeaturedSREFs() {
+  const srefs = await prisma.srefCode.findMany({
+    where: { 
+      featured: true,
+      status: 'ACTIVE'
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true
+        }
+      },
+      categories: {
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              color: true
+            }
+          }
+        }
+      },
+      tags: {
+        include: {
+          tag: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
+      },
+      images: true
+    },
+    take: 6,
+    orderBy: {
+      likeCount: 'desc'
+    }
+  });
 
-  const handleBookmark = useCallback((srefId: string, bookmarked: boolean) => {
-    console.log(`SREF ${srefId} ${bookmarked ? 'bookmarked' : 'unbookmarked'}`);
-  }, []);
+  return srefs.map(sref => ({
+    id: sref.id,
+    code: sref.code,
+    title: sref.title,
+    description: sref.description || '',
+    imageUrl: sref.imageUrl || `https://picsum.photos/400/300?random=${sref.code}`,
+    images: sref.images?.length > 0 
+      ? sref.images.map(img => img.url) 
+      : [
+          `https://picsum.photos/400/300?random=${sref.code}1`,
+          `https://picsum.photos/400/300?random=${sref.code}2`,
+          `https://picsum.photos/400/300?random=${sref.code}3`,
+          `https://picsum.photos/400/300?random=${sref.code}4`
+        ],
+    promptExamples: sref.promptExamples ? JSON.parse(sref.promptExamples) : [],
+    featured: sref.featured,
+    premium: sref.premium,
+    likes: sref.likeCount,
+    views: sref.viewCount,
+    favorites: sref.favoriteCount,
+    category: sref.categories[0]?.category?.name || 'Uncategorized',
+    tags: sref.tags?.map(t => t.tag.name) || [],
+    createdAt: sref.createdAt.toISOString(),
+    user: sref.user ? {
+      id: sref.user.id,
+      name: sref.user.name || 'Anonymous',
+      avatar: sref.user.image || '/avatars/default.jpg'
+    } : undefined
+  }));
+}
 
-  const handleCopy = useCallback((srefCode: string) => {
-    console.log(`SREF code copied: ${srefCode}`);
-  }, []);
-  // Get featured SREFs for homepage
-  const featuredSREFs = testSREFData.filter(sref => sref.featured).slice(0, 6);
-  const newestSREFs = [...testSREFData]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 3);
+async function getNewestSREFs() {
+  const srefs = await prisma.srefCode.findMany({
+    where: {
+      status: 'ACTIVE'
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true
+        }
+      },
+      categories: {
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              color: true
+            }
+          }
+        }
+      },
+      tags: {
+        include: {
+          tag: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
+        }
+      },
+      images: true
+    },
+    take: 3,
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+
+  return srefs.map(sref => ({
+    id: sref.id,
+    code: sref.code,
+    title: sref.title,
+    description: sref.description || '',
+    imageUrl: sref.imageUrl || `https://picsum.photos/400/300?random=${sref.code}`,
+    images: sref.images?.length > 0 
+      ? sref.images.map(img => img.url) 
+      : [
+          `https://picsum.photos/400/300?random=${sref.code}1`,
+          `https://picsum.photos/400/300?random=${sref.code}2`,
+          `https://picsum.photos/400/300?random=${sref.code}3`,
+          `https://picsum.photos/400/300?random=${sref.code}4`
+        ],
+    promptExamples: sref.promptExamples ? JSON.parse(sref.promptExamples) : [],
+    featured: sref.featured,
+    premium: sref.premium,
+    likes: sref.likeCount,
+    views: sref.viewCount,
+    favorites: sref.favoriteCount,
+    category: sref.categories[0]?.category?.name || 'Uncategorized',
+    tags: sref.tags?.map(t => t.tag.name) || [],
+    createdAt: sref.createdAt.toISOString(),
+    user: sref.user ? {
+      id: sref.user.id,
+      name: sref.user.name || 'Anonymous',
+      avatar: sref.user.image || '/avatars/default.jpg'
+    } : undefined
+  }));
+}
+
+export default async function HomePage() {
+  const [featuredSREFs, newestSREFs] = await Promise.all([
+    getFeaturedSREFs(),
+    getNewestSREFs()
+  ]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -37,105 +171,26 @@ export default function HomePage() {
       <CategoryGrid />
       
       {/* Featured SREFs Section */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                ⭐ Featured SREF Codes
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Hand-picked style references that deliver exceptional results
-              </p>
-            </div>
-            <Link
-              href="/discover"
-              className="hidden sm:inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
-            >
-              View All
-              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {featuredSREFs.map((sref, index) => (
-              <InteractiveSREFCard 
-                key={sref.id} 
-                sref={sref} 
-                priority={index < 3}
-                onLike={handleLike}
-                onBookmark={handleBookmark}
-                onCopy={handleCopy}
-              />
-            ))}
-          </div>
-          
-          {/* Mobile View All Button */}
-          <div className="text-center sm:hidden">
-            <Link
-              href="/discover"
-              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
-            >
-              View All Featured SREFs
-              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <SREFSection
+        title="⭐ Featured SREF Codes"
+        subtitle="Hand-picked style references that deliver exceptional results"
+        srefs={featuredSREFs}
+        viewAllLink="/discover"
+        viewAllText="View All Featured SREFs"
+        bgColor="bg-gray-50 dark:bg-gray-800"
+        columns={3}
+      />
 
       {/* Newest SREFs Section */}
-      <section className="py-16 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                🆕 Newest SREF Codes
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Latest additions to our SREF collection
-              </p>
-            </div>
-            <Link
-              href="/discover?sort=newest"
-              className="hidden sm:inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
-            >
-              View All
-              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {newestSREFs.map((sref) => (
-              <InteractiveSREFCard 
-                key={sref.id} 
-                sref={sref}
-                onLike={handleLike}
-                onBookmark={handleBookmark}
-                onCopy={handleCopy}
-              />
-            ))}
-          </div>
-          
-          {/* Mobile View All Button */}
-          <div className="text-center mt-8 sm:hidden">
-            <Link
-              href="/discover?sort=newest"
-              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
-            >
-              View All Newest SREFs
-              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+      <SREFSection
+        title="🆕 Newest SREF Codes"
+        subtitle="Latest additions to our SREF collection"
+        srefs={newestSREFs}
+        viewAllLink="/discover?sort=newest"
+        viewAllText="View All Newest SREFs"
+        bgColor="bg-white dark:bg-gray-900"
+        columns={3}
+      />
 
       {/* Footer */}
       <footer className="bg-gray-900 dark:bg-black text-white py-12">

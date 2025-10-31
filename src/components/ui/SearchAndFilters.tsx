@@ -15,6 +15,16 @@ interface SearchAndFiltersProps {
   data: SREFItem[];
   onFilteredDataChange: (filteredData: SREFItem[]) => void;
   className?: string;
+  categories?: Array<{ 
+    id: string; 
+    name: string; 
+    slug: string; 
+    icon?: string | null; 
+    color?: string | null;
+    _count?: { srefCodes: number };
+  }>;
+  tags?: Array<{ id: string; name: string; }>;
+  showCategoryFilter?: boolean;
 }
 
 const categories = [

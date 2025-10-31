@@ -1,0 +1,15 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Art Deco Style -->
+  <defs>
+    <pattern id="lines" patternUnits="userSpaceOnUse" width="20" height="20">
+      <path d="M0,10 L20,10" stroke="#f39c12" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="400" fill="#2c2c2c"/>
+  <polygon points="200,80 280,160 200,240 120,160" fill="#f39c12"/>
+  <rect x="150" y="130" width="100" height="100" fill="url(#lines)" opacity="0.8"/>
+  <circle cx="200" cy="180" r="30" fill="#e74c3c"/>
+  <rect x="180" y="260" width="40" height="40" fill="#3498db"/>
+  <text x="200" y="350" font-family="serif" font-size="24" fill="#f1c40f" text-anchor="middle">SREF: 4829374619</text>
+  <text x="200" y="375" font-family="serif" font-size="14" fill="#ecf0f1" text-anchor="middle">Art Deco Geometric</text>
+</svg>

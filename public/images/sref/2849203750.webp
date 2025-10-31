@@ -1,0 +1,16 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Anime Style -->
+  <defs>
+    <radialGradient id="anime" cx="50%" cy="30%">
+      <stop offset="0%" style="stop-color:#ff9ff3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#54a0ff;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="#ffeaa7"/>
+  <circle cx="200" cy="120" r="60" fill="url(#anime)"/>
+  <ellipse cx="180" cy="110" rx="8" ry="12" fill="#2d3436"/>
+  <ellipse cx="220" cy="110" rx="8" ry="12" fill="#2d3436"/>
+  <path d="M 170 140 Q 200 160 230 140" stroke="#ff7675" stroke-width="3" fill="none"/>
+  <text x="200" y="350" font-family="Arial" font-size="24" fill="#2d3436" text-anchor="middle">SREF: 2849203750</text>
+  <text x="200" y="375" font-family="Arial" font-size="14" fill="#636e72" text-anchor="middle">Anime Character</text>
+</svg>

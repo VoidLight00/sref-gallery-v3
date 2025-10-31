@@ -1,0 +1,321 @@
+
+> sref-gallery-v3@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.18
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 941ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.2s (594 modules)
+ GET / 200 in 2670ms
+ ✓ Compiled in 410ms (284 modules)
+ ✓ Compiled /api/categories in 73ms (329 modules)
+ GET /api/categories 200 in 106ms
+ ✓ Compiled in 361ms (284 modules)
+ ✓ Compiled in 355ms (284 modules)
+ ✓ Compiled /api/sref in 397ms (858 modules)
+Error fetching SREFs: PrismaClientValidationError: 
+Invalid `prisma.srefCode.findMany()` invocation:
+
+{
+  where: {
+    status: "ACTIVE",
+    categories: {
+      some: {
+        category: {
+          slug: "abstract"
+        }
+      }
+    }
+  },
+  include: {
+    categories: {
+      include: {
+        category: true
+      }
+    },
+    tags: {
+      include: {
+        tag: true
+      }
+    },
+    images: {
+      orderBy: {
+        imageOrder: "asc",
+        ~~~~~~~~~~
+?       id?: SortOrder,
+?       srefCodeId?: SortOrder,
+?       url?: SortOrder,
+?       width?: SortOrder | SortOrderInput,
+?       height?: SortOrder | SortOrderInput,
+?       format?: SortOrder | SortOrderInput,
+?       createdAt?: SortOrder,
+?       srefCode?: SrefCodeOrderByWithRelationInput
+      }
+    },
+    submittedBy: {
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true
+      }
+    },
+    _count: {
+      select: {
+        userLikes: true,
+        userFavorites: true,
+        userDownloads: true
+      }
+    }
+  },
+  orderBy: {
+    createdAt: "desc"
+  },
+  skip: 0,
+  take: 20
+}
+
+Unknown argument `imageOrder`. Available options are marked with ?.
+    at _n (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ri.handleRequestError (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:121:7102)
+    at ri.handleAndLogRequestError (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:121:6784)
+    at ri.request (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:121:6491)
+    at async l (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:130:9812)
+    at async Promise.all (index 0)
+    at async GET (webpack-internal:///(rsc)/./src/app/api/sref/route.ts:92:32)
+    at async /Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:55831
+    at async eO.execute (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46527)
+    at async eO.handle (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57165)
+    at async doRender (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1353:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1575:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1483:28)
+    at async DevServer.renderPageComponent (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1911:24)
+    at async DevServer.renderToResponseImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1949:32)
+    at async DevServer.pipeImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:921:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:817:17)
+    at async /Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/router-server.js:173:21)
+    at async handleRequest (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/router-server.js:350:24)
+    at async requestHandlerImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/router-server.js:374:13)
+    at async Server.requestListener (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  clientVersion: '6.13.0'
+}
+ GET /api/sref?category=abstract 500 in 460ms
+ ✓ Compiled in 352ms (284 modules)
+ ✓ Compiled in 614ms (858 modules)
+ ✓ Compiled in 357ms (284 modules)
+ ✓ Compiled in 353ms (284 modules)
+Error fetching SREFs: PrismaClientValidationError: 
+Invalid `prisma.srefCode.findMany()` invocation:
+
+{
+  where: {
+    status: "ACTIVE"
+  },
+  include: {
+    categories: {
+      include: {
+        category: true
+      }
+    },
+    tags: {
+      include: {
+        tag: true
+      }
+    },
+    images: {
+      orderBy: {
+        id: "asc"
+      }
+    },
+    submittedBy: {
+    ~~~~~~~~~~~
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true
+      }
+    },
+    _count: {
+      select: {
+        userLikes: true,
+        userFavorites: true,
+        userDownloads: true
+      }
+    },
+?   user?: true,
+?   likes?: true,
+?   favorites?: true
+  },
+  orderBy: {
+    createdAt: "desc"
+  },
+  skip: 0,
+  take: 20
+}
+
+Unknown field `submittedBy` for include statement on model `SrefCode`. Available options are marked with ?.
+    at _n (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:29:1363)
+    at ri.handleRequestError (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:121:7102)
+    at ri.handleAndLogRequestError (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:121:6784)
+    at ri.request (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:121:6491)
+    at async l (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/@prisma/client/runtime/library.js:130:9812)
+    at async Promise.all (index 0)
+    at async GET (webpack-internal:///(rsc)/./src/app/api/sref/route.ts:92:32)
+    at async /Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:55831
+    at async eO.execute (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:46527)
+    at async eO.handle (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:57165)
+    at async doRender (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1353:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1575:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1483:28)
+    at async DevServer.renderPageComponent (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1911:24)
+    at async DevServer.renderToResponseImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:1949:32)
+    at async DevServer.pipeImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:921:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/base-server.js:817:17)
+    at async /Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/router-server.js:173:21)
+    at async handleRequest (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/router-server.js:350:24)
+    at async requestHandlerImpl (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/router-server.js:374:13)
+    at async Server.requestListener (/Users/voidlight/claude-code/projects/sref-gallery-v3/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  clientVersion: '6.13.0'
+}
+ GET /api/sref 500 in 28ms
+ ✓ Compiled in 351ms (284 modules)
+ ✓ Compiled in 376ms (284 modules)
+ ✓ Compiled in 587ms (858 modules)
+ ✓ Compiled in 352ms (284 modules)
+ ✓ Compiled in 334ms (306 modules)
+ ✓ Compiled in 365ms (284 modules)
+ ✓ Compiled in 354ms (284 modules)
+ GET /api/sref 200 in 20ms
+ ✓ Compiled in 353ms (284 modules)
+ ✓ Compiled in 349ms (284 modules)
+ ✓ Compiled / in 113ms (572 modules)
+ GET / 200 in 190ms
+ ⚠ The "images.domains" configuration is deprecated. Please use "images.remotePatterns" configuration instead.
+ ✓ Compiled /_not-found in 189ms (859 modules)
+ GET /images/sref/7381920475.webp 404 in 232ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750.webp 404 in 232ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467.webp 404 in 234ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467.webp received text/html; charset=utf-8
+ GET /images/sref/9182736450.webp 404 in 234ms
+ ⨯ The requested resource isn't a valid image for /images/sref/9182736450.webp received text/html; charset=utf-8
+ GET /images/sref/1029384756.webp 404 in 233ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1029384756.webp received text/html; charset=utf-8
+ GET /images/sref/8293746510.webp 404 in 229ms
+ ⨯ The requested resource isn't a valid image for /images/sref/8293746510.webp received text/html; charset=utf-8
+ GET /images/sref/7381920475-thumb.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750-thumb.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467-thumb.webp 404 in 10ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/7381920475.webp 404 in 14ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475.webp received text/html; charset=utf-8
+ GET /images/sref/7381920475-thumb.webp 404 in 14ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750.webp 404 in 14ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750-thumb.webp 404 in 15ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467.webp 404 in 16ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467-thumb.webp 404 in 16ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/9182736450.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/9182736450.webp received text/html; charset=utf-8
+ GET /images/sref/1029384756.webp 404 in 12ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1029384756.webp received text/html; charset=utf-8
+ GET /images/sref/8293746510.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/8293746510.webp received text/html; charset=utf-8
+ GET /images/sref/7381920475-thumb.webp 404 in 12ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475-thumb.webp received text/html; charset=utf-8
+ ✓ Compiled in 352ms (286 modules)
+ ✓ Compiled in 372ms (286 modules)
+ GET /images/sref/9182736450-thumb.webp 404 in 9ms
+ ⨯ The requested resource isn't a valid image for /images/sref/9182736450-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/1029384756-thumb.webp 404 in 10ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1029384756-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/8293746510-thumb.webp 404 in 12ms
+ ⨯ The requested resource isn't a valid image for /images/sref/8293746510-thumb.webp received text/html; charset=utf-8
+ ✓ Compiled /discover in 100ms (854 modules)
+ GET /images/sref/9182736450.webp 404 in 24ms
+ ⨯ The requested resource isn't a valid image for /images/sref/9182736450.webp received text/html; charset=utf-8
+ GET /images/sref/1029384756.webp 404 in 24ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1029384756.webp received text/html; charset=utf-8
+ GET /images/sref/8293746510.webp 404 in 25ms
+ ⨯ The requested resource isn't a valid image for /images/sref/8293746510.webp received text/html; charset=utf-8
+ GET /images/sref/6492837561.webp 404 in 26ms
+ ⨯ The requested resource isn't a valid image for /images/sref/6492837561.webp received text/html; charset=utf-8
+ GET /images/sref/5738291047.webp 404 in 26ms
+ ⨯ The requested resource isn't a valid image for /images/sref/5738291047.webp received text/html; charset=utf-8
+ GET /images/sref/3951847293.webp 404 in 27ms
+ ⨯ The requested resource isn't a valid image for /images/sref/3951847293.webp received text/html; charset=utf-8
+ GET /images/sref/4829374619.webp 404 in 16ms
+ ⨯ The requested resource isn't a valid image for /images/sref/4829374619.webp received text/html; charset=utf-8
+ GET /images/sref/7381920475.webp 404 in 17ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467.webp 404 in 17ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750.webp 404 in 18ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750.webp received text/html; charset=utf-8
+ GET /images/sref/3951847293-thumb.webp 404 in 18ms
+ ⨯ The requested resource isn't a valid image for /images/sref/3951847293-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/7381920475-thumb.webp 404 in 16ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750-thumb.webp 404 in 10ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/9182736450-thumb.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/9182736450-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/1029384756-thumb.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1029384756-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/8293746510-thumb.webp 404 in 12ms
+ ⨯ The requested resource isn't a valid image for /images/sref/8293746510-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/6492837561-thumb.webp 404 in 12ms
+ ⨯ The requested resource isn't a valid image for /images/sref/6492837561-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/5738291047-thumb.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/5738291047-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/4829374619-thumb.webp 404 in 10ms
+ ⨯ The requested resource isn't a valid image for /images/sref/4829374619-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467-thumb.webp 404 in 10ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467-thumb.webp received text/html; charset=utf-8
+ ✓ Compiled /categories in 365ms (872 modules)
+ ✓ Compiled /ranking in 126ms (880 modules)
+ ✓ Compiled in 349ms (292 modules)
+ GET /images/sref/7381920475.webp 404 in 24ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750.webp 404 in 24ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467.webp 404 in 25ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467.webp received text/html; charset=utf-8
+ GET /images/sref/9182736450.webp 404 in 28ms
+ ⨯ The requested resource isn't a valid image for /images/sref/9182736450.webp received text/html; charset=utf-8
+ GET /images/sref/1029384756.webp 404 in 19ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1029384756.webp received text/html; charset=utf-8
+ GET /images/sref/8293746510.webp 404 in 17ms
+ ⨯ The requested resource isn't a valid image for /images/sref/8293746510.webp received text/html; charset=utf-8
+ GET /images/sref/7381920475-thumb.webp 404 in 24ms
+ ⨯ The requested resource isn't a valid image for /images/sref/7381920475-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/2849203750-thumb.webp 404 in 24ms
+ ⨯ The requested resource isn't a valid image for /images/sref/2849203750-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/1747943467-thumb.webp 404 in 23ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1747943467-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/9182736450-thumb.webp 404 in 11ms
+ ⨯ The requested resource isn't a valid image for /images/sref/9182736450-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/1029384756-thumb.webp 404 in 12ms
+ ⨯ The requested resource isn't a valid image for /images/sref/1029384756-thumb.webp received text/html; charset=utf-8
+ GET /images/sref/8293746510-thumb.webp 404 in 13ms
+ ⨯ The requested resource isn't a valid image for /images/sref/8293746510-thumb.webp received text/html; charset=utf-8
+ ✓ Compiled in 369ms (292 modules)
+[?25h

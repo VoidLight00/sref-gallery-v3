@@ -1,0 +1,10 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gothic Style -->
+  <rect width="400" height="400" fill="#2c2c54"/>
+  <polygon points="200,50 150,150 250,150" fill="#40407a" opacity="0.8"/>
+  <rect x="170" y="150" width="60" height="120" fill="#40407a"/>
+  <rect x="185" y="180" width="30" height="40" fill="#706fd3" opacity="0.7"/>
+  <circle cx="200" cy="280" r="20" fill="#ff5252"/>
+  <text x="200" y="350" font-family="serif" font-size="24" fill="#f1f2f6" text-anchor="middle">SREF: 6492837561</text>
+  <text x="200" y="375" font-family="serif" font-size="14" fill="#c7ecee" text-anchor="middle">Gothic Architecture</text>
+</svg>

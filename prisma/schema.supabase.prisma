@@ -1,0 +1,297 @@
+// Supabase Production Schema - PostgreSQL
+// This schema is designed for production use with Supabase
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User model - integrated with Supabase Auth
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique
+  name          String?
+  username      String?   @unique
+  password      String?   // For credential auth, optional if using Supabase Auth only
+  avatar        String?
+  bio           String?   @db.Text
+  isPremium     Boolean   @default(false)
+  role          UserRole  @default(USER)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  srefCodes     SrefCode[]
+  likes         Like[]
+  favorites     Favorite[]
+  sessions      Session[]
+  comments      Comment[]
+
+  @@index([email])
+  @@index([username])
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  PREMIUM
+  ADMIN
+
+  @@map("user_role")
+}
+
+// SREF Code - main content model
+model SrefCode {
+  id              String   @id @default(uuid()) @db.Uuid
+  code            String   @unique
+  title           String
+  description     String?  @db.Text
+  promptExamples  String[] // Array of prompt examples
+  imageUrl        String?  // Primary image URL
+  featured        Boolean  @default(false)
+  premium         Boolean  @default(false)
+  viewCount       Int      @default(0)
+  likeCount       Int      @default(0)
+  favoriteCount   Int      @default(0)
+  commentCount    Int      @default(0)
+  status          SrefStatus @default(ACTIVE)
+  publishedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+  userId          String?  @db.Uuid
+
+  // Relations
+  user            User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  categories      CategorySref[]
+  tags            TagSref[]
+  likes           Like[]
+  favorites       Favorite[]
+  images          SrefImage[]
+  comments        Comment[]
+  analytics       SrefAnalytics[]
+
+  @@index([code])
+  @@index([userId])
+  @@index([featured])
+  @@index([premium])
+  @@index([status])
+  @@index([createdAt])
+  @@map("sref_codes")
+}
+
+enum SrefStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  DELETED
+
+  @@map("sref_status")
+}
+
+// Category model
+model Category {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  icon        String?
+  color       String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  srefCodes   CategorySref[]
+
+  @@index([slug])
+  @@index([isActive])
+  @@map("categories")
+}
+
+// Tag model
+model Tag {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  slug      String   @unique
+  useCount  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  srefCodes TagSref[]
+
+  @@index([slug])
+  @@index([useCount])
+  @@map("tags")
+}
+
+// Many-to-many: Category <-> SrefCode
+model CategorySref {
+  id         String   @id @default(uuid()) @db.Uuid
+  categoryId String   @db.Uuid
+  srefCodeId String   @db.Uuid
+  createdAt  DateTime @default(now())
+
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  srefCode   SrefCode @relation(fields: [srefCodeId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, srefCodeId])
+  @@index([categoryId])
+  @@index([srefCodeId])
+  @@map("category_sref")
+}
+
+// Many-to-many: Tag <-> SrefCode
+model TagSref {
+  id         String   @id @default(uuid()) @db.Uuid
+  tagId      String   @db.Uuid
+  srefCodeId String   @db.Uuid
+  createdAt  DateTime @default(now())
+
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  srefCode   SrefCode @relation(fields: [srefCodeId], references: [id], onDelete: Cascade)
+
+  @@unique([tagId, srefCodeId])
+  @@index([tagId])
+  @@index([srefCodeId])
+  @@map("tag_sref")
+}
+
+// Like model
+model Like {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  srefCodeId String   @db.Uuid
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  srefCode   SrefCode @relation(fields: [srefCodeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, srefCodeId])
+  @@index([userId])
+  @@index([srefCodeId])
+  @@map("likes")
+}
+
+// Favorite model
+model Favorite {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  srefCodeId String   @db.Uuid
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  srefCode   SrefCode @relation(fields: [srefCodeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, srefCodeId])
+  @@index([userId])
+  @@index([srefCodeId])
+  @@map("favorites")
+}
+
+// Comment model
+model Comment {
+  id         String   @id @default(uuid()) @db.Uuid
+  content    String   @db.Text
+  userId     String   @db.Uuid
+  srefCodeId String   @db.Uuid
+  parentId   String?  @db.Uuid // For nested comments
+  isEdited   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  srefCode   SrefCode  @relation(fields: [srefCodeId], references: [id], onDelete: Cascade)
+  parent     Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies    Comment[] @relation("CommentReplies")
+
+  @@index([userId])
+  @@index([srefCodeId])
+  @@index([parentId])
+  @@map("comments")
+}
+
+// SREF Images - multiple images per SREF
+model SrefImage {
+  id         String   @id @default(uuid()) @db.Uuid
+  srefCodeId String   @db.Uuid
+  url        String
+  width      Int?
+  height     Int?
+  format     String?
+  size       Int?     // File size in bytes
+  altText    String?
+  isPrimary  Boolean  @default(false)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  srefCode   SrefCode @relation(fields: [srefCodeId], references: [id], onDelete: Cascade)
+
+  @@index([srefCodeId])
+  @@index([isPrimary])
+  @@map("sref_images")
+}
+
+// Session model for NextAuth
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// Analytics model for tracking views and interactions
+model SrefAnalytics {
+  id         String   @id @default(uuid()) @db.Uuid
+  srefCodeId String   @db.Uuid
+  eventType  AnalyticsEvent
+  userId     String?  @db.Uuid
+  metadata   Json?    // Additional event data
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  srefCode   SrefCode @relation(fields: [srefCodeId], references: [id], onDelete: Cascade)
+
+  @@index([srefCodeId])
+  @@index([eventType])
+  @@index([createdAt])
+  @@map("sref_analytics")
+}
+
+enum AnalyticsEvent {
+  VIEW
+  LIKE
+  FAVORITE
+  SHARE
+  DOWNLOAD
+  COMMENT
+
+  @@map("analytics_event")
+}
+
+// Search optimization - for full-text search
+model SearchIndex {
+  id         String   @id @default(uuid()) @db.Uuid
+  srefCodeId String   @unique @db.Uuid
+  searchText String   @db.Text // Concatenated searchable fields
+  updatedAt  DateTime @updatedAt
+
+  @@index([searchText(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@map("search_index")
+}

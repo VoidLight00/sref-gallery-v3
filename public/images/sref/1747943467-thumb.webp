@@ -1,0 +1,17 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Vintage Photo Style -->
+  <defs>
+    <filter id="sepia">
+      <feColorMatrix values="0.393 0.769 0.189 0 0
+                             0.349 0.686 0.168 0 0
+                             0.272 0.534 0.131 0 0
+                             0 0 0 1 0"/>
+    </filter>
+  </defs>
+  <rect width="400" height="400" fill="#f4e4bc"/>
+  <rect x="50" y="50" width="300" height="200" fill="#8b7355" rx="10"/>
+  <rect x="70" y="70" width="260" height="160" fill="#d4af37" opacity="0.7"/>
+  <circle cx="200" cy="150" r="40" fill="#cd853f" opacity="0.8"/>
+  <text x="200" y="320" font-family="serif" font-size="24" fill="#8b4513" text-anchor="middle">SREF: 1747943467</text>
+  <text x="200" y="345" font-family="serif" font-size="14" fill="#a0522d" text-anchor="middle">Vintage Photography</text>
+</svg>
